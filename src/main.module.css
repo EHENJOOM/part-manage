@@ -1,0 +1,33 @@
+.fillScreen {
+    min-height: 100vh;
+}
+
+.logo {
+    color: azure;
+    padding: 16px;
+    font-size: 20px;
+}
+
+.head {
+    background-color: white;
+    padding-left: 24px;
+}
+
+.content {
+    background-color: white;
+    margin: 24px;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.trigger:hover {
+    color: #1890ff;
+}
