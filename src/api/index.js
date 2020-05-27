@@ -23,14 +23,62 @@ service.interceptors.response.use(response => {
 });
 
 const getPart = (page, pageSize) => {
-    return service.post(`SelectPart?page=${page}&pageSize=${pageSize}`);
-}
+    return service.post(`SelectPart`, {
+        page: page,
+        pageSize: pageSize
+    });
+};
 
 const login = values => {
-    return service.post(`Login?username=${values.username}&password=${values.password}&type=${values.type}`);
-}
+    return service.post(`Login`, {
+        username: values.username,
+        password: values.password,
+        type: values.type,
+    });
+};
+
+const register = values => {
+    return service.post(`Registers`, {
+        username: values.username,
+        password: values.password,
+        type: values.type,
+        name: values.name,
+        address: values.address,
+        phone: values.phone,
+        verify: values.verify,
+        sex: values.sex
+    });
+};
+
+const forgetPassword = values => {
+    return service.post(`ForgetPassword`, {
+        username: values.username,
+        password: values.password,
+        verify: values.verify,
+        type: values.type,
+    });
+};
+
+const token = (userName, type, token) => {
+    return service.post(`Token`, {
+        username: userName,
+        token: token,
+        type: type
+    });
+};
+
+const sendVerify = (userName, type) => {
+    return service.post(`SendVerify`, {
+        username: userName,
+        type: type
+    });
+};
 
 export {
     getPart,
     login,
+    token,
+    register,
+    sendVerify,
+    forgetPassword,
 }

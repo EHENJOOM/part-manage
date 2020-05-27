@@ -1,25 +1,100 @@
 import React, {Component} from 'react';
-import {Form, Input, Select, Row, Col, Button, } from 'antd';
+import {Form, Input, Select, Row, Col, Button, message,} from 'antd';
 import Style from '../style.module.css';
 import Config from "../../config/Config";
+import {register, sendVerify} from "../../api";
 
 const { Option } = Select;
 
 class Register extends Component {
 
+    formRef = React.createRef();
+
     onFinish = values => {
-        console.log('Received values of form: ', values);
+        register(values).then(response => {
+            switch (response.code) {
+                case Config.OK:
+                    message.success("注册成功！");
+                    // TODO 跳转至登录
+                    break;
+                case Config.SERVER_ERROR:
+                    message.error("服务器故障！");
+                    break;
+                case Config.ACCOUNT_REGISTERED:
+                    this.formRef.current.setFields([
+                        {
+                            name: 'username',
+                            errors: ['该账号已注册！']
+                        }
+                    ]);
+                    break;
+                case Config.VERIFY_CODE_TIME_OUT:
+                    this.formRef.current.setFields([
+                        {
+                            name: 'verify',
+                            errors: ['验证码已超时！']
+                        }
+                    ]);
+                    break;
+                case Config.VERIFY_CODE_ERROR:
+                    this.formRef.current.setFields([
+                        {
+                            name: 'verify',
+                            errors: ['验证码错误！']
+                        }
+                    ])
+                    break;
+                default:
+                    message.error("未知错误！错误码：" + response.code);
+            }
+        }).catch(error => {
+            message.error("未知异常！");
+        });
     };
+
+    sendVerifyCode = () => {
+        // 数据验证
+        let values = this.formRef.current.getFieldValue('username');
+        console.log(values);
+        if (values === undefined || values.trim().length <= 0) {
+            this.formRef.current.setFields([
+                {
+                    name: 'username',
+                    errors: ['请填写邮箱！']
+                }
+            ]);
+            return;
+        }
+        if (this.formRef.current.getFieldsError(['username'])[0].errors.length > 0) {
+            return;
+        }
+
+        sendVerify(values.username, Config.REGISTER_DIALOG).then(response => {
+            switch (response.code) {
+                case Config.OK:
+                    message.success("验证码发送成功！");
+                    break;
+                case Config.SERVER_ERROR:
+                    message.error("服务器故障！");
+                    break;
+                default:
+                    message.error("未知错误！错误码：" + response.code);
+            }
+        }).catch(error => {
+            message.error("未知异常！");
+        });
+    }
 
     render() {
         return (
             <div className={Style.fillScreen}>
-                <div className={[Style.center, Style.paddingTop80].join(" ")}>
+                <div className={[Style.center, Style.paddingTop40].join(" ")}>
                     <h1>注册</h1>
                 </div>
                 <Row className={Style.paddingTop40}>
                     <Col span={10} offset={6}>
                         <Form
+                            ref={this.formRef}
                             labelCol={{span:8}}
                             wrapperCol={{span:16}}
                             name="register"
@@ -27,7 +102,7 @@ class Register extends Component {
                             scrollToFirstError
                         >
                             <Form.Item
-                                name="email"
+                                name="username"
                                 label="邮箱"
                                 rules={[
                                     {
@@ -43,14 +118,6 @@ class Register extends Component {
                                 <Input placeholder={"请输入邮箱"}/>
                             </Form.Item>
 
-                            <Form.Item
-                                name="name"
-                                label="姓名"
-                                rules={[{ required: true, message: '请输入你的姓名!', whitespace: true }]}
-                            >
-                                <Input placeholder={"请输入真实姓名"}/>
-                            </Form.Item>
-
                             <Form.Item label="验证码">
                                 <Row gutter={8}>
                                     <Col span={14}>
@@ -63,7 +130,7 @@ class Register extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col span={10} className={Style.right}>
-                                        <Button>获取验证码</Button>
+                                        <Button onClick={this.sendVerifyCode}>获取验证码</Button>
                                     </Col>
                                 </Row>
                             </Form.Item>
@@ -105,6 +172,59 @@ class Register extends Component {
                                 <Input.Password placeholder={"请再次确认密码"}/>
                             </Form.Item>
 
+                            <Form.Item
+                                name="name"
+                                label="姓名"
+                                rules={[{ required: true, message: '请输入你的姓名!', whitespace: true }]}
+                            >
+                                <Input placeholder={"请输入真实姓名"}/>
+                            </Form.Item>
+
+                            <Form.Item
+                                name="sex"
+                                label="性别"
+                                rules={[{ required: true, message: '请选择性别!', whitespace: true }]}
+                            >
+                                <Select placeholder="请选择性别" allowClear>
+                                    <Option value={"男"}>男</Option>
+                                    <Option value={"女"}>女</Option>
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item
+                                name="address"
+                                label="地址"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入地址!',
+                                    },
+                                ]}
+                                hasFeedback
+                            >
+                                <Input placeholder={"请输入地址"}/>
+                            </Form.Item>
+
+                            <Form.Item
+                                name="phone"
+                                label="电话"
+                                rules={[
+                                    {
+                                        // type: 'regexp',
+                                        pattern: /^1[3456789]\d{9}$/,
+                                        message: '请输入正确的电话！'
+                                    },
+                                    {
+                                        required: true,
+                                        message: '请输入电话!',
+                                    },
+
+                                ]}
+                                hasFeedback
+                            >
+                                <Input placeholder={"请输入电话"}/>
+                            </Form.Item>
+
                             <Form.Item name="type" label="权限"
                                        rules={[
                                            {
@@ -113,7 +233,7 @@ class Register extends Component {
                                            },
                                        ]}
                             >
-                                <Select placeholder="请选择账号类型" onChange={this.onTypeChange} allowClear>
+                                <Select placeholder="请选择账号类型" allowClear>
                                     <Option value={Config.USER_LOGIN}>用户</Option>
                                     <Option value={Config.ADMIN_LOGIN}>管理员</Option>
                                 </Select>

@@ -9,6 +9,8 @@ const { Option } = Select;
 
 class Login extends Component {
 
+    formRef = React.createRef();
+
     onFinish = values => {
         login(values).then(response => {
             switch (response.code) {
@@ -19,15 +21,32 @@ class Login extends Component {
                     message.success("登录成功！");
                     break;
                 case Config.ACCOUNT_PSD_ERROR:
-                    message.error("账号或密码错误！");
+                    this.formRef.current.setFields([
+                        {
+                            name: 'password',
+                            errors: ['账号或密码错误！']
+                        }
+                    ]);
                     break;
+                case Config.USER_NOT_EXIST:
+                    this.formRef.current.setFields([
+                        {
+                            name: 'username',
+                            errors: ['该账号未注册！']
+                        }
+                    ]);
+                    break;
+                case Config.SERVER_ERROR:
+                    message.error("服务器故障！");
+                    break;
+                default:
+                    message.error("未知错误！错误码：" + response.code);
             }
+        }).catch(error => {
+            message.error("未知异常！");
+            console.log(error);
         });
     };
-
-    onTypeChange = () => {
-
-    }
 
     render() {
         return (
@@ -38,12 +57,12 @@ class Login extends Component {
                 <Row className={Style.paddingTop40}>
                     <Col span={10} offset={6}>
                         <Form
+                            ref={this.formRef}
                             hideRequiredMark
                             size={"middle"}
                             labelCol={{span:8}}
                             wrapperCol={{span:16}}
                             name="normal_login"
-                            className="login-form"
                             initialValues={{ remember: true }}
                             onFinish={this.onFinish}
                         >
@@ -61,7 +80,7 @@ class Login extends Component {
                                     },
                                 ]}
                             >
-                                <Select placeholder="请选择账号类型" onChange={this.onTypeChange} allowClear>
+                                <Select placeholder="请选择账号类型" allowClear>
                                     <Option value={Config.USER_LOGIN}>用户</Option>
                                     <Option value={Config.ADMIN_LOGIN}>管理员</Option>
                                     <Option value={Config.SUPER_ADMIN_LOGIN}>超级管理员</Option>

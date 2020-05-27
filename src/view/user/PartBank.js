@@ -89,7 +89,7 @@ class PartBank extends Component {
             console.log(error);
         }).finally(() => {
             this.setState({isLoading: false});
-        })
+        });
     }
 
     addIntoCart = record => {
