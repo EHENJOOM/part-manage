@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, message, Table, Tag, Tooltip} from "antd";
-import {getPart} from "../../api";
+import {addIntoCart, getPart} from "../../api";
 import Config from "../../config/Config";
 
 class PartBank extends Component {
@@ -93,7 +93,20 @@ class PartBank extends Component {
     }
 
     addIntoCart = record => {
-
+        addIntoCart(localStorage.getItem("username"), localStorage.getItem("type"), record.id, 1).then(response => {
+            switch (response.code) {
+                case Config.OK:
+                    message.success("加入购物车成功！");
+                    break;
+                case Config.SERVER_ERROR:
+                    message.error("服务器故障！");
+                    break;
+                default:
+                    message.error("未知错误！错误码：" + response.code);
+            }
+        }).catch(error => {
+            message.error("未知异常！");
+        });
     }
 
     // 页数据量及当前页改变事件

@@ -1,5 +1,7 @@
 import axios from "axios";
 import {message} from "antd";
+import {stringify} from "qs";
+import Config from "../config/Config";
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -9,7 +11,18 @@ const service = axios.create({
 
 service.interceptors.request.use(config => {
     // config代表发送给服务器的信息，后期自己根据需要填充数据，自己配置即可
+
+    // 兼容 post 跨域问题
+    if (config.method === 'post') {
+        // 修改 Content-Type
+        config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        // 将对象参数转换为序列化的 URL 形式（key=val&key=val）
+        config.data = stringify(config.data);
+    }
     return config;
+}, (error) => {
+    console.log(error);
+    return Promise.reject(error);
 });
 
 service.interceptors.response.use(response => {
@@ -74,11 +87,32 @@ const sendVerify = (userName, type) => {
     });
 };
 
+const addIntoCart = (userName, type, partId, count) => {
+    return service.post(`addIntoCart`, {
+        username: userName,
+        type: type,
+        part: partId,
+        count: count
+    });
+};
+
+const getCarts = (userName, type, page, pageSize) => {
+    return service.post(`ShopCart`, {
+        operate: Config.SELECT_OPERATE,
+        username: userName,
+        type: type,
+        page: page,
+        pageSize: pageSize
+    });
+};
+
 export {
     getPart,
     login,
     token,
     register,
+    addIntoCart,
+    getCarts,
     sendVerify,
     forgetPassword,
 }

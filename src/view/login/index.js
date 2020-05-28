@@ -18,6 +18,7 @@ class Login extends Component {
                     localStorage.setItem("token", response.token);
                     localStorage.setItem("username", values.username);
                     localStorage.setItem("type", values.type);
+                    this.props.history.push("/user");
                     message.success("登录成功！");
                     break;
                 case Config.ACCOUNT_PSD_ERROR:
