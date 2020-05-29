@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Button, message, Table, Tag, Tooltip} from "antd";
 import {addIntoCart, getPart} from "../../api";
 import Config from "../../config/Config";
+import Style from "../style.module.css";
 
 class PartBank extends Component {
 
@@ -22,7 +23,7 @@ class PartBank extends Component {
             <div>
                 <Table
                     loading={this.state.isLoading}
-                    columns={this.state.columns}
+                    columns={this.columns}
                     rowKey={record => record.id}
                     dataSource={this.state.dataSource}
                     pagination={{current: this.state.page, total: this.state.total, pageSize: this.state.pageSize, onChange: this.change, onShowSizeChange: this.onShowSizeChange}}
@@ -39,6 +40,7 @@ class PartBank extends Component {
                 var res = [];
                 for (let i = 0, length = response.data.length; i < length; i++) {
                     var temp = {
+                        number: i + 1,
                         id: response.data[i]['id'],
                         code: response.data[i]['code'],
                         name: response.data[i]['name'],
@@ -47,39 +49,8 @@ class PartBank extends Component {
                     }
                     res.push(temp);
                 }
-                var keys = Object.keys(res[0]);
-                var columns = keys.map(item => {
-                    if (item === 'count') {
-                        return {
-                            title: mapFieldToChinese[item],
-                            dataIndex: item,
-                            key: item,
-                            render: (text, record, index) => {
-                                return (
-                                    <Tooltip title={record.count >= 50 ? "库存量高于50" : "库存量低于50"}>
-                                        <Tag color={record.count >= 50 ? "green" : "red"}>{record.count}</Tag>
-                                    </Tooltip>
-                                )
-                            }
-                        }
-                    }
-                    return {
-                        title: mapFieldToChinese[item],
-                        dataIndex: item,
-                        key: item
-                    }
-                });
-                columns.push({
-                    title: '操作',
-                    dataIndex: 'action',
-                    key: 'action',
-                    render: (text, record, index) => {
-                        return <Button onClick={this.addIntoCart.bind(this, record)}>加入购物车</Button>
-                    }
-                });
                 this.setState({
                     dataSource: res,
-                    columns
                 });
             } else if (response.code === Config.SERVER_ERROR) {
                 message.error("服务器故障！故障码：" + response.code);
@@ -127,14 +98,50 @@ class PartBank extends Component {
     componentDidMount() {
         this.getPartBank(this.state.page, this.state.pageSize);
     }
-}
 
-const mapFieldToChinese = {
-    id: "序号",
-    code: "零件代码",
-    name: "名称",
-    count: "库存量",
-    price: "单价"
+    columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            className: Style.invisible
+        },
+        {
+            title: '序号',
+            dataIndex: 'number',
+            key: 'number',
+        },
+        {
+            title: '零件代码',
+            dataIndex: 'code',
+            key: 'code',
+        },
+        {
+            title: '名称',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: '库存量',
+            dataIndex: 'count',
+            key: 'count',
+            render: (text, record, index) => {
+                return (
+                    <Tooltip title={record.count >= 50 ? "库存量高于50" : "库存量低于50"}>
+                        <Tag color={record.count >= 50 ? "green" : "red"}>{record.count}</Tag>
+                    </Tooltip>
+                )
+            },
+        },
+        {
+            title: '操作',
+            dataIndex: 'action',
+            key: 'action',
+            render: (text, record, index) => {
+                return <Button onClick={this.addIntoCart.bind(this, record)}>加入购物车</Button>
+            }
+        }
+    ]
 }
 
 export default PartBank;

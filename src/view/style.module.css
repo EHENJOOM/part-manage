@@ -30,3 +30,13 @@
 .center {
     text-align: center;
 }
+
+.invisible {
+    display: none;
+}
+
+.linkButton {
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 15px;
+}
