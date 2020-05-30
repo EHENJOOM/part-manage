@@ -56,7 +56,7 @@ class PartBank extends Component {
                 message.error("服务器故障！故障码：" + response.code);
             }
         }).catch(error => {
-            message.error("数据异常！");
+            message.error("未知异常！");
             console.log(error);
         }).finally(() => {
             this.setState({isLoading: false});
@@ -138,7 +138,7 @@ class PartBank extends Component {
             dataIndex: 'action',
             key: 'action',
             render: (text, record, index) => {
-                return <Button onClick={this.addIntoCart.bind(this, record)}>加入购物车</Button>
+                return <Button type={"link"} className={Style.linkButton} onClick={this.addIntoCart.bind(this, record)}>加入购物车</Button>
             }
         }
     ]

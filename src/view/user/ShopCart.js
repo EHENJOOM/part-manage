@@ -18,8 +18,7 @@ class EditableTable extends React.Component {
             page: 1,
             pageSize: 5,
             isLoading: true,
-            userName: localStorage.getItem("username"),
-            type: localStorage.getItem("type"),
+            lid: localStorage.getItem("lid"),
         };
         this.columns = [
             {
@@ -79,11 +78,12 @@ class EditableTable extends React.Component {
                                     </Button>
                                 )}
                             </EditableContext.Consumer>
-                            <Button className={Style.linkButton} type={"link"}>取消</Button>
+                            <Button className={Style.linkButton} type={"link"} onClick={() => this.cancel(record.key)}>取消</Button>
                         </span>
                     ) : (
                         <div>
                             <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} onClick={() => this.edit(record.key)}>编辑</Button>
+                            <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} onClick={this.purchase.bind(this, record)}>购买</Button>
                             <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} danger onClick={() => this.delete(record.key)}>删除</Button>
                         </div>
                     );
@@ -198,7 +198,7 @@ class EditableTable extends React.Component {
     }
 
     getData = (page, pageSize) => {
-        getCarts(this.state.userName, this.state.type, page, pageSize).then(response => {
+        getCarts(this.state.lid, page, pageSize).then(response => {
             switch (response.code) {
                 case Config.OK:
                     var res = [];

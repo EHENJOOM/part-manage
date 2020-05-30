@@ -96,18 +96,27 @@ const addIntoCart = (userName, type, partId, count) => {
     });
 };
 
-const getCarts = (userName, type, page, pageSize) => {
+const getCarts = (lid, page, pageSize) => {
     return service.post(`ShopCart`, {
         operate: Config.SELECT_OPERATE,
-        username: userName,
-        type: type,
+        lid: lid,
         page: page,
         pageSize: pageSize
     });
 };
 
+const getOrders = (lid, page, pageSize) => {
+    return service.post(`Orders`, {
+        operate: Config.SELECT_OPERATE,
+        lid: lid,
+        page: page,
+        pageSize: pageSize,
+    });
+};
+
 export {
     getPart,
+    getOrders,
     login,
     token,
     register,

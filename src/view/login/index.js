@@ -16,8 +16,8 @@ class Login extends Component {
             switch (response.code) {
                 case Config.OK:
                     localStorage.setItem("token", response.token);
-                    localStorage.setItem("username", values.username);
-                    localStorage.setItem("type", values.type);
+                    localStorage.setItem("name", response.name);
+                    localStorage.setItem("lid", response.lid);
                     this.props.history.push("/user");
                     message.success("登录成功！");
                     break;
