@@ -31,3 +31,12 @@
 .trigger:hover {
     color: #1890ff;
 }
+
+.headerImage {
+    background-color: #ffbf00;
+    vertical-align: middle;
+}
+
+.headerName {
+    font-size: 18px;
+}

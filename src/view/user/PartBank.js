@@ -35,7 +35,6 @@ class PartBank extends Component {
     getPartBank = (page, pageSize) => {
         this.setState({isLoading: true});
         getPart(page, pageSize).then(response => {
-            this.setState({total: response.total});
             if (response.code === Config.OK) {
                 var res = [];
                 for (let i = 0, length = response.data.length; i < length; i++) {
@@ -51,6 +50,7 @@ class PartBank extends Component {
                 }
                 this.setState({
                     dataSource: res,
+                    total: response.total,
                 });
             } else if (response.code === Config.SERVER_ERROR) {
                 message.error("服务器故障！故障码：" + response.code);

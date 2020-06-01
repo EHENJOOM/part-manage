@@ -114,12 +114,20 @@ const getOrders = (lid, page, pageSize) => {
     });
 };
 
+const deleteOrder = orderId => {
+    return service.post(`Orders`, {
+        operate: Config.DELETE_OPERATE,
+        orderId: orderId,
+    });
+};
+
 export {
     getPart,
     getOrders,
     login,
     token,
     register,
+    deleteOrder,
     addIntoCart,
     getCarts,
     sendVerify,

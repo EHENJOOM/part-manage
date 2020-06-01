@@ -13,7 +13,7 @@ ReactDOM.render(
     <ConfigProvider locale={zhCN}>
         <Router>
             <Switch>
-                <Route path={"/user"} render={(rootProps) => {
+                <Route path={"/user"} render={rootProps => {
                     // 授权检测
                     return <User {...rootProps}/>
                 }}/>

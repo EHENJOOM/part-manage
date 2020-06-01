@@ -31,6 +31,19 @@ const Orders = Loadable({
     loading: Loading
 });
 
+const UserManage = Loadable({
+    loader: () => import("./admin/UserManage"),
+    loading: Loading,
+});
+const PartManage = Loadable({
+    loader: () => import("./admin/PartManage"),
+    loading: Loading,
+});
+const OrderManage = Loadable({
+    loader: () => import("./admin/OrderManage"),
+    loading: Loading,
+});
+
 export {
     Login,
     Register,
@@ -38,5 +51,8 @@ export {
     NotFound,
     PartBank,
     ShopCart,
-    Orders
+    Orders,
+    UserManage,
+    PartManage,
+    OrderManage,
 }

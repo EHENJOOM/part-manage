@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Style from '../style.module.css';
 import Config from '../../config/Config';
 import {login} from "../../api";
+import Map from "../../util/configmap";
 
 const { Option } = Select;
 
@@ -18,7 +19,7 @@ class Login extends Component {
                     localStorage.setItem("token", response.token);
                     localStorage.setItem("name", response.name);
                     localStorage.setItem("lid", response.lid);
-                    this.props.history.push("/user");
+                    this.props.history.push(Map.mapConfigToPath[values.type]);
                     message.success("登录成功！");
                     break;
                 case Config.ACCOUNT_PSD_ERROR:
@@ -101,7 +102,6 @@ class Login extends Component {
                     </Col>
                 </Row>
             </div>
-
         );
     }
 }

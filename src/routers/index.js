@@ -1,4 +1,15 @@
-import {ForgetPassword, Login, NotFound, Orders, PartBank, Register, ShopCart} from "../view";
+import {
+    ForgetPassword,
+    Login,
+    NotFound,
+    OrderManage,
+    Orders,
+    PartBank,
+    PartManage,
+    Register,
+    ShopCart,
+    UserManage
+} from "../view";
 import {UserOutlined, VideoCameraOutlined, UploadOutlined,} from '@ant-design/icons';
 
 const commonRoutes = [
@@ -34,7 +45,7 @@ const userRoutes = [
         icon: VideoCameraOutlined
     },
     {
-        pathname: '/user/orders',
+        pathname: '/user/order',
         component: Orders,
         title: '订单',
         icon: UploadOutlined
@@ -43,7 +54,24 @@ const userRoutes = [
 ]
 
 const adminRoutes = [
-
+    {
+        pathname: '/admin/user',
+        title: '用户管理',
+        component: UserManage,
+        icon: UserOutlined,
+    },
+    {
+        pathname: '/admin/part',
+        title: '零件管理',
+        component: PartManage,
+        icon: VideoCameraOutlined,
+    },
+    {
+        pathname: '/admin/order',
+        title: '订单管理',
+        component: OrderManage,
+        icon: UploadOutlined,
+    }
 ]
 
 const superAdminRoutes = [
