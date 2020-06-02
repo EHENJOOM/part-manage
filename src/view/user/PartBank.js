@@ -134,6 +134,18 @@ class PartBank extends Component {
             },
         },
         {
+            title: '单价',
+            dataIndex: 'price',
+            key: 'price',
+            render: (text, record, index) => {
+                return (
+                    <Tooltip title={record.price >= 2000 ? '单价高于2000元' : '单价低于2000元'}>
+                        <Tag color={record.price >= 2000 ? 'green' : 'red'}>{record.price.toFixed(2)}</Tag>
+                    </Tooltip>
+                )
+            }
+        },
+        {
             title: '操作',
             dataIndex: 'action',
             key: 'action',

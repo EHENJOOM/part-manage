@@ -5,10 +5,9 @@ const EditableContext = React.createContext(undefined, undefined);
 
 export class EditableCell extends Component {
     getInput = () => {
-        const {inputType} = this.props;
-        console.log(this.props);
+        const {inputType, step} = this.props;
         if (inputType === 'number') {
-            return <InputNumber/>;
+            return <InputNumber step={step}/>;
         }
         return <Input/>;
     };

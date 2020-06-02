@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
-import {Button, Form, message, Table, Tag, Tooltip} from "antd";
+import {Button, Form, message, Modal, Table, Tag, Tooltip} from "antd";
 import {getCarts} from "../../api";
 import EditableContext, {EditableCell} from "../../component/editable/index";
 import Config from "../../config/Config";
 import Style from "../style.module.css";
+import {ExclamationCircleOutlined} from "@ant-design/icons";
+
+const {confirm} = Modal;
 
 class EditableTable extends React.Component {
 
@@ -20,76 +23,6 @@ class EditableTable extends React.Component {
             isLoading: true,
             lid: localStorage.getItem("lid"),
         };
-        this.columns = [
-            {
-                title: 'ID',
-                dataIndex: 'id',
-                key: 'id',
-                editable: false,
-                className: Style.invisible
-            },
-            {
-                title: '序号',
-                dataIndex: 'number',
-                width: '15%',
-                editable: false,
-            },
-            {
-                title: '零件代码',
-                dataIndex: 'code',
-                width: '15%',
-                editable: false,
-            },
-            {
-                title: '名称',
-                dataIndex: 'name',
-                width: '20%',
-                editable: false,
-            },
-            {
-                title: '数量',
-                dataIndex: 'count',
-                editable: true,
-            },
-            {
-                title: '总金额',
-                dataIndex: 'price',
-                editable: false,
-                render: (text, record, index) => {
-                    return (
-                        <Tooltip title={record.price >= 2000 ? "金额超过2000" : "金额小于2000"}>
-                            <Tag color={record.price >= 2000 ? 'red' : 'green'}>{record.price}</Tag>
-                        </Tooltip>
-                    )
-                }
-            },
-            {
-                title: '操作',
-                dataIndex: 'operation',
-                render: (text, record, index) => {
-                    const { editingKey } = this.state;
-                    const editable = this.isEditing(record);
-                    return editable ? (
-                        <span>
-                            <EditableContext.Consumer>
-                                {(form) => (
-                                    <Button onClick={() => this.save(form, record)} type={"link"} className={Style.linkButton}>
-                                        保存
-                                    </Button>
-                                )}
-                            </EditableContext.Consumer>
-                            <Button className={Style.linkButton} type={"link"} onClick={() => this.cancel(record.key)}>取消</Button>
-                        </span>
-                    ) : (
-                        <div>
-                            <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} onClick={() => this.edit(record.key)}>编辑</Button>
-                            <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} onClick={this.purchase.bind(this, record)}>购买</Button>
-                            <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} danger onClick={() => this.delete(record.key)}>删除</Button>
-                        </div>
-                    );
-                },
-            },
-        ];
     }
 
     isEditing = (record) => {
@@ -108,12 +41,22 @@ class EditableTable extends React.Component {
     };
 
     delete = (key) => {
-        console.log(key);
-        const { data } = this.state;
-        const newData = [...data];
-        const index = newData.findIndex((item) => key === item.key);
-        newData.splice(index, 1);
-        this.setState({ data: newData,});
+        confirm({
+            title: '是否将其从购物车中删除?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            okText: '删除',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk() {
+                const { data } = this.state;
+                const newData = [...data];
+                const index = newData.findIndex((item) => key === item.key);
+                newData.splice(index, 1);
+                this.setState({ data: newData,});
+                // TODO 调用api删除
+            },
+        })
     };
 
     save(form, record) {
@@ -128,30 +71,11 @@ class EditableTable extends React.Component {
         data[record.number - 1].price = row.count * data[record.number - 1].price / data[record.number - 1].count;
         data[record.number - 1].count = row.count;
         this.setState({data, editingKey: ''});
+        // TODO 调用api保存
     }
 
     edit = (key) => {
         this.setState({ editingKey: key });
-    };
-
-    handleAdd = () => {
-        const { data, editingKey } = this.state;
-        if (editingKey !== '') {
-            message.error('请先保存');
-            return;
-        }
-        const key = (data.length + 1).toString();
-        const row = {
-            key,
-            number: data.length + 1,
-            name: '新零件',
-            code: 'NC_202309',
-            count: 1,
-            price: 200,
-        };
-        const newData = [...data];
-        newData.splice(data.length, 1, row);
-        this.setState({ data: newData, editingKey: key });
     };
 
     render() {
@@ -160,7 +84,7 @@ class EditableTable extends React.Component {
                 cell: EditableCell,
             },
         };
-        const columns = this.columns.map((col) => {
+        const columns = this.columns.map(col => {
             if (!col.editable) {
                 return col;
             }
@@ -179,9 +103,6 @@ class EditableTable extends React.Component {
         const { form } = this.props;
         return (
             <EditableContext.Provider value={form}>
-                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                    增加
-                </Button>
                 <Form ref={this.formRef}>
                     <Table
                         components={components}
@@ -256,6 +177,78 @@ class EditableTable extends React.Component {
     componentDidMount() {
         this.getData(this.state.page, this.state.pageSize);
     }
+
+    columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            editable: false,
+            className: Style.invisible
+        },
+        {
+            title: '序号',
+            dataIndex: 'number',
+            width: '15%',
+            editable: false,
+        },
+        {
+            title: '零件代码',
+            dataIndex: 'code',
+            width: '15%',
+            editable: false,
+        },
+        {
+            title: '名称',
+            dataIndex: 'name',
+            width: '20%',
+            editable: false,
+        },
+        {
+            title: '数量',
+            dataIndex: 'count',
+            key: 'count',
+            editable: true,
+        },
+        {
+            title: '总金额',
+            dataIndex: 'price',
+            editable: false,
+            render: (text, record, index) => {
+                return (
+                    <Tooltip title={record.price >= 2000 ? "金额超过2000" : "金额小于2000"}>
+                        <Tag color={record.price >= 2000 ? 'red' : 'green'}>{record.price.toFixed(2)}</Tag>
+                    </Tooltip>
+                )
+            }
+        },
+        {
+            title: '操作',
+            dataIndex: 'operation',
+            render: (text, record, index) => {
+                const { editingKey } = this.state;
+                const editable = this.isEditing(record);
+                return editable ? (
+                    <span>
+                            <EditableContext.Consumer>
+                                {(form) => (
+                                    <Button onClick={() => this.save(form, record)} type={"link"} className={Style.linkButton}>
+                                        保存
+                                    </Button>
+                                )}
+                            </EditableContext.Consumer>
+                            <Button className={Style.linkButton} type={"link"} onClick={() => this.cancel(record.key)}>取消</Button>
+                        </span>
+                ) : (
+                    <div>
+                        <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} onClick={() => this.edit(record.key)}>编辑</Button>
+                        <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} onClick={this.purchase.bind(this, record)}>购买</Button>
+                        <Button disabled={editingKey !== ''} className={Style.linkButton} type={"link"} danger onClick={() => this.delete(record.key)}>删除</Button>
+                    </div>
+                );
+            },
+        },
+    ];
 }
 
 class ShopCart extends Component {

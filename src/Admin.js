@@ -24,7 +24,6 @@ class Admin extends Component {
     };
 
     menuHandler = ({item, key, keyPath, domEvent}) =>  {
-        console.log(key);
         this.props.history.push(key);
     }
 

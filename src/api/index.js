@@ -121,6 +121,14 @@ const deleteOrder = orderId => {
     });
 };
 
+const getUsers = (page, pageSize) => {
+    return service.post(`Users`, {
+        operate: Config.SELECT_OPERATE,
+        page: page,
+        pageSize: pageSize,
+    });
+};
+
 export {
     getPart,
     getOrders,
@@ -130,6 +138,7 @@ export {
     deleteOrder,
     addIntoCart,
     getCarts,
+    getUsers,
     sendVerify,
     forgetPassword,
 }

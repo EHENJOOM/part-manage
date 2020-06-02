@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, message, Modal, Table, Tag, Tooltip} from "antd";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import {getOrders} from "../../api";
+import {deleteOrder, getOrders} from "../../api";
 import Style from "../style.module.css";
 import Config from "../../config/Config";
 import Map from "../../util/configmap";
@@ -93,7 +93,20 @@ class Orders extends Component {
             okType: 'danger',
             cancelText: '取消',
             onOk() {
-                console.log('OK');
+                deleteOrder(record.id).then(response => {
+                    switch (response.code) {
+                        case Config.OK:
+                            message.success("删除成功！");
+                            break;
+                        case Config.SERVER_ERROR:
+                            message.error("服务器故障！");
+                            break;
+                        default:
+                            message.error("未知故障！故障码：" + response.code);
+                    }
+                }).catch(error => {
+                    message.error("未知异常！");
+                });
             },
             onCancel() {
                 console.log('Cancel');
@@ -160,7 +173,7 @@ class Orders extends Component {
             render: (text, record, index) => {
                 return (
                     <Tooltip title={record.totalPrice >= 2000 ? "金额超过2000" : "金额小于2000"}>
-                        <Tag color={record.totalPrice >= 2000 ? 'red' : 'green'}>{record.totalPrice}</Tag>
+                        <Tag color={record.totalPrice >= 2000 ? 'red' : 'green'}>{record.totalPrice.toFixed(2)}</Tag>
                     </Tooltip>
                 )
             }
