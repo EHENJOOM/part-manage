@@ -105,9 +105,10 @@ const getCarts = (lid, page, pageSize) => {
     });
 };
 
-const getOrders = (lid, page, pageSize) => {
+const getOrders = (isAll, lid, page, pageSize) => {
     return service.post(`Orders`, {
         operate: Config.SELECT_OPERATE,
+        all: isAll,
         lid: lid,
         page: page,
         pageSize: pageSize,

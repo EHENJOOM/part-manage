@@ -29,7 +29,7 @@ export class EditableCell extends Component {
                     <Form.Item style={{margin: 0}} name={dataIndex} rules={[
                         {
                             required: true,
-                            message: `Please Input ${title}!`,
+                            message: `请输入${title}!`,
                         },
                     ]} initialValue={record[dataIndex]}>
                         {this.getInput()}

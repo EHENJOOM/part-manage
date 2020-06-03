@@ -79,6 +79,7 @@ class PartManage extends Component {
     };
 
     cancel = (key) => {
+        console.log(key);
         if (key.length > 6) {
             const { data } = this.state;
             const newData = data;
@@ -96,7 +97,7 @@ class PartManage extends Component {
             okText: '删除',
             okType: 'danger',
             cancelText: '取消',
-            onOk() {
+            onOk: () => {
                 const { data } = this.state;
                 const newData = [...data];
                 const index = newData.findIndex((item) => key === item.key);
@@ -116,6 +117,7 @@ class PartManage extends Component {
         }
         const { data } = this.state;
         const row = this.formRef.current.getFieldsValue();
+        console.log(row);
         data[record.number - 1].code = row.code;
         data[record.number - 1].name = row.name;
         data[record.number - 1].count = row.count;
@@ -125,14 +127,14 @@ class PartManage extends Component {
     }
 
     handleAdd = () => {
-        const { data, editingKey } = this.state;
+        const { data, editingKey, pageSize } = this.state;
         if (editingKey !== '') {
             message.error('请先保存');
             return;
         }
-        const key = (data.length + 1).toString();
+        const key = data.length.toString();
         const row = {
-            key,
+            key: key,
             number: data.length + 1,
             name: '',
             code: '',
@@ -141,7 +143,8 @@ class PartManage extends Component {
         };
         const newData = [...data];
         newData.splice(data.length, 1, row);
-        this.setState({ data: newData, editingKey: key });
+        console.log(newData);
+        this.setState({ data: newData, editingKey: key, pageSize: pageSize + 1, });
     };
 
     onShowSizeChange = (current, size) => {

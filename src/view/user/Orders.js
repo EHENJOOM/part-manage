@@ -40,7 +40,7 @@ class Orders extends Component {
 
     getOrders = (page, pageSize) => {
         this.setState({isLoading: true});
-        getOrders(this.state.lid, page, pageSize).then(response => {
+        getOrders(false, this.state.lid, page, pageSize).then(response => {
             switch (response.code) {
                 case Config.OK:
                     var res = [];
