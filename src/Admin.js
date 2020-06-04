@@ -42,9 +42,11 @@ class Admin extends Component {
                     <div className={MainStyle.logo}>{this.state.collapsed ? "商家" : "零件销售管理系统"}</div>
                     <Menu theme="dark" mode="inline" onClick={this.menuHandler} selectedKeys={this.props.location.pathname}>
                         {adminRoutes.map(item => {
-                            return (
-                                <Menu.Item key={item.pathname} icon={<item.icon/>}>{item.title}</Menu.Item>
-                            )
+                            if (item.visible) {
+                                return (
+                                    <Menu.Item key={item.pathname} icon={<item.icon/>}>{item.title}</Menu.Item>
+                                )
+                            }
                         })}
                     </Menu>
                 </Sider>
@@ -71,7 +73,7 @@ class Admin extends Component {
                         <Switch>
                             {adminRoutes.map(item => {
                                 return (
-                                    <Route key={item.pathname} path={item.pathname} render={(rootProps => {
+                                    <Route exact={item.exact} key={item.pathname} path={item.pathname} render={(rootProps => {
                                         return <item.component {...rootProps}/>
                                     })} />
                                 )

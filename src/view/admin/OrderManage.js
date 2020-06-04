@@ -93,6 +93,10 @@ class OrderManage extends Component {
 
     }
 
+    detail = record => {
+        this.props.history.push({pathname: '/admin/order/detail', query: record});
+    }
+
     onShowSizeChange = (current, size) => {
         this.setState({
             page: current,
@@ -132,6 +136,8 @@ class OrderManage extends Component {
                             address: response.data[0]['userBean']['address'],
                             phone: response.data[0]['userBean']['phone'],
                             buildTime: DateFormat.dateFormat(response.data[i]['orderDate']),
+                            latestTime: DateFormat.dateFormat(response.data[i]['paymentDate']),
+                            payTime: DateFormat.dateFormat(response.data[i]['payDate']),
                             status: Map.mapStatusToChinese[response.data[i]['status']],
                             extend: response.data[i]['extend'],
                             aat: response.data[i]['suggest'],
@@ -139,7 +145,7 @@ class OrderManage extends Component {
                         res.push(temp);
                     }
                     this.setState({
-                        dataSource: res,
+                        data: res,
                         total: response.total,
                     });
                     break;
@@ -162,7 +168,7 @@ class OrderManage extends Component {
             title: 'ID',
             dataIndex: 'id',
             editable: false,
-            className: Style.invisible
+            className: Style.invisible,
         },
         {
             title: '序号',
@@ -209,9 +215,10 @@ class OrderManage extends Component {
             dataIndex: 'userCode',
             key: 'userCode',
             editable: false,
+            className: Style.invisible,
         },
         {
-            title: '姓名',
+            title: '用户姓名',
             dataIndex: 'userName',
             key: 'userName',
             editable: false,
@@ -221,6 +228,7 @@ class OrderManage extends Component {
             dataIndex: 'sex',
             key: 'sex',
             editable: false,
+            className: Style.invisible,
             render: (text, record, index) => {
                 return <Tag color={record.sex === '男' ? 'blue' : 'pink'}>{record.sex}</Tag>
             }
@@ -230,12 +238,14 @@ class OrderManage extends Component {
             key: 'phone',
             dataIndex: 'phone',
             editable: false,
+            className: Style.invisible,
         },
         {
             title: '地址',
             key: 'address',
             dataIndex: 'address',
             editable: false,
+            className: Style.invisible,
         },
         {
             title: '订单创建时间',
@@ -248,12 +258,14 @@ class OrderManage extends Component {
             dataIndex: 'latestTime',
             key: 'latestTime',
             editable: false,
+            className: Style.invisible,
         },
         {
             title: '支付日期',
             dataIndex: 'payTime',
             key: 'payTime',
             editable: false,
+            className: Style.invisible,
         },
         {
             title: '状态',
@@ -266,12 +278,35 @@ class OrderManage extends Component {
             dataIndex: 'extend',
             key: 'extend',
             editable: true,
+            className: Style.invisible,
         },
         {
-            title: '平均欠款时间(AAT)',
+            title: '平均欠款时间',
             dataIndex: 'aat',
             key: 'aat',
             editable: false,
+            render: (text, record, index) => {
+                return (
+                    <Tooltip
+                        color={record.aat < 3 ? 'green' : record.aat < 5 ? 'blue' : record.aat < 7 ? 'yellow' : record.aat < 10 ? 'orange' : 'red'}
+                        title={'信用' + (record.aat < 3 ? '非常好' : record.aat < 5 ? '良好' : record.aat < 7 ? '一般' : record.aat < 10 ? '差' : '非常差')}
+                    >
+                        <Tag color={record.aat < 3 ? 'success' : record.aat < 5 ? 'processing' : record.aat < 7 ? 'gold' : record.aat < 10 ? 'warning' : 'error'}>{record.aat + '天'}</Tag>
+                    </Tooltip>
+                )
+            },
+        },
+        {
+            title: '操作',
+            dataIndex: 'action',
+            key: 'action',
+            render: (text, record, index) => {
+                return (
+                    <div>
+                        <Button type={'link'} className={Style.linkButton} onClick={this.detail.bind(this, record)}>查看</Button>
+                    </div>
+                )
+            }
         },
     ]
 

@@ -1,7 +1,7 @@
 import {
     ForgetPassword,
     Login,
-    NotFound,
+    NotFound, OrderDetail,
     OrderManage,
     Orders,
     PartBank,
@@ -57,21 +57,35 @@ const adminRoutes = [
     {
         pathname: '/admin/user',
         title: '用户管理',
+        visible: true,
+        exact: true,
         component: UserManage,
         icon: UserOutlined,
     },
     {
         pathname: '/admin/part',
         title: '零件管理',
+        visible: true,
+        exact: true,
         component: PartManage,
         icon: VideoCameraOutlined,
     },
     {
         pathname: '/admin/order',
         title: '订单管理',
+        visible: true,
+        exact: true,
         component: OrderManage,
         icon: UploadOutlined,
-    }
+    },
+    {
+        pathname: '/admin/order/detail',
+        title: '订单详情',
+        visible: false,
+        exact: false,
+        component: OrderDetail,
+        icon: UploadOutlined,
+    },
 ]
 
 const superAdminRoutes = [

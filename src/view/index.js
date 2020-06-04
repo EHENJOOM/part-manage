@@ -43,6 +43,10 @@ const OrderManage = Loadable({
     loader: () => import("./admin/OrderManage"),
     loading: Loading,
 });
+const OrderDetail = Loadable({
+    loader: () => import("./admin/OrderDetail"),
+    loading: Loading,
+});
 
 export {
     Login,
@@ -55,4 +59,5 @@ export {
     UserManage,
     PartManage,
     OrderManage,
+    OrderDetail,
 }
