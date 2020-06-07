@@ -4,6 +4,7 @@ import EditableContext, {EditableCell} from "../../component/editable";
 import Style from "../style.module.css";
 import {getPart} from "../../api";
 import Config from "../../config/Config";
+import MainStyle from "../../main.module.css";
 import {ExclamationCircleOutlined} from "@ant-design/icons";
 
 const {confirm} = Modal;
@@ -51,20 +52,22 @@ class PartManage extends Component {
         const { form } = this.props;
         return (
             <EditableContext.Provider value={form}>
-                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                    增加
-                </Button>
-                <Form ref={this.formRef}>
-                    <Table
-                        components={components}
-                        dataSource={data}
-                        columns={columns}
-                        rowClassName="editable-row"
-                        loading={this.state.isLoading}
-                        rowKey={record => record.id}
-                        pagination={{current: this.state.page, total: this.state.total, pageSize: this.state.pageSize, onChange: this.change, onShowSizeChange: this.onShowSizeChange}}
-                    />
-                </Form>
+                <div className={MainStyle.content}>
+                    <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                        增加
+                    </Button>
+                    <Form ref={this.formRef}>
+                        <Table
+                            components={components}
+                            dataSource={data}
+                            columns={columns}
+                            rowClassName="editable-row"
+                            loading={this.state.isLoading}
+                            rowKey={record => record.id}
+                            pagination={{current: this.state.page, total: this.state.total, pageSize: this.state.pageSize, onChange: this.change, onShowSizeChange: this.onShowSizeChange}}
+                        />
+                    </Form>
+                </div>
             </EditableContext.Provider>
         );
     }

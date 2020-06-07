@@ -69,7 +69,7 @@ class Admin extends Component {
                             </Col>
                         </Row>
                     </Header>
-                    <Content className={MainStyle.content}>
+                    <Content>
                         <Switch>
                             {adminRoutes.map(item => {
                                 return (

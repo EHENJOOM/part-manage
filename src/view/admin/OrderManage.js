@@ -6,6 +6,7 @@ import {getOrders} from "../../api";
 import Style from "../style.module.css";
 import DateFormat from "../../util/dateformat";
 import Map from "../../util/configmap";
+import MainStyle from "../../main.module.css";
 
 class OrderManage extends Component {
 
@@ -50,17 +51,19 @@ class OrderManage extends Component {
         const { form } = this.props;
         return (
             <EditableContext.Provider value={form}>
-                <Form ref={this.formRef}>
-                    <Table
-                        components={components}
-                        dataSource={data}
-                        columns={columns}
-                        rowClassName="editable-row"
-                        loading={this.state.isLoading}
-                        rowKey={record => record.id}
-                        pagination={{current: this.state.page, total: this.state.total, pageSize: this.state.pageSize, onChange: this.change, onShowSizeChange: this.onShowSizeChange}}
-                    />
-                </Form>
+                <div className={MainStyle.content}>
+                    <Form ref={this.formRef}>
+                        <Table
+                            components={components}
+                            dataSource={data}
+                            columns={columns}
+                            rowClassName="editable-row"
+                            loading={this.state.isLoading}
+                            rowKey={record => record.id}
+                            pagination={{current: this.state.page, total: this.state.total, pageSize: this.state.pageSize, onChange: this.change, onShowSizeChange: this.onShowSizeChange}}
+                        />
+                    </Form>
+                </div>
             </EditableContext.Provider>
         );
     }
@@ -94,7 +97,7 @@ class OrderManage extends Component {
     }
 
     detail = record => {
-        this.props.history.push({pathname: '/admin/order/detail', query: record});
+        this.props.history.push({pathname: '/admin/order/detail', query: {param: record}});
     }
 
     onShowSizeChange = (current, size) => {
@@ -248,7 +251,7 @@ class OrderManage extends Component {
             className: Style.invisible,
         },
         {
-            title: '订单创建时间',
+            title: '订单创建日期',
             dataIndex: 'buildTime',
             key: 'buildTime',
             editable: false,

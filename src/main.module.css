@@ -18,6 +18,7 @@
     margin: 24px;
     padding: 16px;
     border-radius: 10px;
+    min-height: 95%;
 }
 
 .trigger {

@@ -3,6 +3,7 @@ import {message, Table, Tag} from "antd";
 import Config from "../../config/Config";
 import {getUsers} from "../../api";
 import Style from "../style.module.css";
+import MainStyle from "../../main.module.css";
 
 class UserManage extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class UserManage extends Component {
 
     render() {
         return (
-            <div>
+            <div className={MainStyle.content}>
                 <Table
                     loading={this.state.isLoading}
                     columns={this.columns}

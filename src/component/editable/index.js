@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Form, Input, InputNumber} from "antd";
+import {Form, Input, InputNumber, Select} from "antd";
 
+const { Option } = Select;
 const EditableContext = React.createContext(undefined, undefined);
 
 export class EditableCell extends Component {
@@ -8,6 +9,16 @@ export class EditableCell extends Component {
         const {inputType, step} = this.props;
         if (inputType === 'number') {
             return <InputNumber step={step}/>;
+        }
+        if (inputType === 'select') {
+            const {options} = this.props;
+            return (
+                <Select>
+                    {options.map(item => {
+                        return <Option value={item.value}>{item.title}</Option>
+                    })}
+                </Select>
+            )
         }
         return <Input/>;
     };
